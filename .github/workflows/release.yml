@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version string for APK filenames + release tag (e.g. "1.0.0-609-pre1" or "1.0.0-609"). Strip leading v; the workflow re-adds it for the git tag. Required for workflow_dispatch.'
+        description: 'Version string for APK filenames + release tag (e.g. "1.0.0-610-pre1" or "1.0.0-610"). Strip leading v; the workflow re-adds it for the git tag. Required for workflow_dispatch.'
         required: false
       stable:
         description: "Cut a stable GitHub Release (default: artifact-only prerelease). Stable requires version to be set."
@@ -53,7 +53,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             RAW="${{ github.event.inputs.version }}"
             if [ -z "$RAW" ]; then
-              echo "::error::version input is required for workflow_dispatch. Example: 1.0.0-609-pre1"
+              echo "::error::version input is required for workflow_dispatch. Example: 1.0.0-610-pre1"
               exit 1
             fi
           else
@@ -116,16 +116,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release download base-apk-609 \
-            --pattern "GameHub_6.0.9.apk" \
+          gh release download base-apk-610 \
+            --pattern "GameHub_6.1.0.apk" \
             --repo ${{ github.repository }} \
-            --output GameHub_6.0.9.apk
+            --output GameHub_6.1.0.apk
 
       - name: Stage shared artifacts
         run: |
           mkdir -p shared
           cp revanced-cli.jar shared/
-          cp GameHub_6.0.9.apk shared/
+          cp GameHub_6.1.0.apk shared/
           cp $(find patches/build/libs -name "*.rvp" ! -name "*-javadoc*" ! -name "*-sources*" | head -1) shared/patches.rvp
           # Side-channel artefacts that ship in the final release
           cp patches/build/libs/*.rvp shared/ 2>/dev/null || true
