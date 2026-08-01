@@ -188,9 +188,12 @@ public class ComponentInstaller {
                         bos.write(buffer, 0, read);
                     }
                     bos.close();
-                    
-                    // Preserve executable bit if entry was executable
-                    if ((entry.getUnixMode() & 0111) != 0) {
+
+                    // On Android, executable permissions are managed by system
+                    // Set executable for common binary extensions
+                    String lowerName = entryName.toLowerCase();
+                    if (lowerName.endsWith(".so") || lowerName.endsWith(".dll") || 
+                        lowerName.endsWith(".exe") || !lowerName.contains(".")) {
                         entryFile.setExecutable(true, false);
                     }
                 }
