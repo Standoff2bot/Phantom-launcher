@@ -1,0 +1,59 @@
+package app.revanced.patches.gamehub.componentstore
+
+// =========================================================================
+// DISABLED: Wine Validation Patch causes app crash on launch
+// 
+// This patch attempted to intercept PcEnginePluginHostActivity.onCreate
+// to validate Wine installation before PC game launch, but caused
+// immediate crash when the app starts.
+//
+// Root cause: Smali injection into onCreate() with complex register
+// allocation conflicts with GameHub's heavily obfuscated code.
+//
+// TODO: Investigate alternative approaches:
+// 1. Hook a different lifecycle method (onStart, onResume)
+// 2. Use a different injection point (not onCreate)
+// 3. Implement validation in WineProcessManager instead of Activity
+// 4. Wait for less obfuscated GameHub version
+//
+// For now: Component Store accessible manually via adb or menu integration
+// =========================================================================
+
+/*
+Original patch code commented out to preserve for future reference:
+
+private const val PC_ENGINE_ACTIVITY = "Lcom/xiaoji/egggame/plugin/pcengine/host/PcEnginePluginHostActivity;"
+private const val HANDLER_CLASS = "Lapp/revanced/extension/gamehub/componentstore/ComponentStoreMenuHandler;"
+
+@Suppress("unused")
+val wineValidationPatch = bytecodePatch(
+    name = "Wine validation on launch",
+    description = "Validates that Wine/Proton is installed before launching " +
+        "PC games. Shows a Component Store prompt if Wine is missing, " +
+        "preventing the 'Failed to load PC engine plugin' error.",
+) {
+    compatibleWith(GAMEHUB_PACKAGE(GAMEHUB_VERSION))
+
+    apply {
+        val onCreateMethod = firstMethod {
+            definingClass == PC_ENGINE_ACTIVITY &&
+                name == "onCreate" &&
+                parameterTypes == listOf("Landroid/os/Bundle;") &&
+                returnType == "V"
+        }
+
+        onCreateMethod.addInstructions(
+            0,
+            """
+                invoke-static {p0}, $HANDLER_CLASS->validateWineOrPrompt(Landroid/app/Activity;)Z
+                move-result v0
+                if-eqz v0, :wine_installed
+                invoke-virtual {p0}, Landroid/app/Activity;->finish()V
+                return-void
+                :wine_installed
+                nop
+            """.trimIndent(),
+        )
+    }
+}
+*/
