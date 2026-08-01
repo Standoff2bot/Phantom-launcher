@@ -116,10 +116,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release download base-apk-610 \
-            --pattern "GameHub_6.1.0.apk" \
-            --repo ${{ github.repository }} \
-            --output GameHub_6.1.0.apk
+          gh release download Beta \
+            --pattern "*.apk" \
+            --repo ${{ github.repository }}
+          # Rename downloaded APK to expected name
+          mv *.apk GameHub_6.1.0.apk || { echo "No APK found in Beta release"; exit 1; }
 
       - name: Stage shared artifacts
         run: |

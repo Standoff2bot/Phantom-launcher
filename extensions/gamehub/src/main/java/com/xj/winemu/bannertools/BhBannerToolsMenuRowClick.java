@@ -58,6 +58,8 @@ public final class BhBannerToolsMenuRowClick implements Function1<Object, Object
     // XServer (device-confirmed SIGABRT), so the renderer patches are pinned to
     // 6.0.4 and the tile would just dead-launch an unregistered activity. Keep
     // this array in lock-step with dispatch(int).
+    // 6.1.0: Added "Component Store" tile for dynamic component installation
+    // (DXVK, VKD3D, Wine, Mesa Turnip, Box64, FEX).
     private static final String[] TILE_LABELS = new String[] {
         "Vibration",
         "Game ID",
@@ -65,6 +67,7 @@ public final class BhBannerToolsMenuRowClick implements Function1<Object, Object
         "GOG",
         "Overlay",
         "Root",
+        "Components",
     };
     private static final String[] TILE_DRAWABLES = new String[] {
         "bh_bt_vibration",
@@ -73,6 +76,7 @@ public final class BhBannerToolsMenuRowClick implements Function1<Object, Object
         "bh_bt_gog",
         "bh_bt_overlay",
         "bh_bt_root",
+        "bh_bt_components",
     };
 
     // Tile indices that act on the CURRENT GAME (need a gameId in scope).
@@ -286,6 +290,12 @@ public final class BhBannerToolsMenuRowClick implements Function1<Object, Object
                     break;
                 case 5:
                     com.xj.winemu.perf.BhPerfMenus.showRootDialog(host);
+                    break;
+                case 6:
+                    // Component Store tile opens the ComponentStoreActivity
+                    // for browsing and installing DXVK, VKD3D, Wine, Mesa, etc.
+                    app.revanced.extension.gamehub.componentstore.ComponentStoreMenuHandler
+                        .launchComponentStore(host);
                     break;
                 default:
                     Log.w(TAG, "unknown dialog item index " + which);

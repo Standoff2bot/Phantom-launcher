@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportWidth="56"
+    android:viewportHeight="56">
+  <!-- Dark background circle -->
+  <path
+      android:fillColor="#2C2C2C"
+      android:pathData="M28,28m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0"/>
+  <!-- Package/box icon (main symbol) -->
+  <path
+      android:fillColor="#4CAF50"
+      android:pathData="M28,16L18,21v10l10,5 10,-5V21z"/>
+  <!-- Box lid -->
+  <path
+      android:fillColor="#66BB6A"
+      android:pathData="M28,16l-10,5 10,5 10,-5z"/>
+  <!-- Download arrow overlay -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M28,24v6M25,28l3,3 3,-3"/>
+</vector>
