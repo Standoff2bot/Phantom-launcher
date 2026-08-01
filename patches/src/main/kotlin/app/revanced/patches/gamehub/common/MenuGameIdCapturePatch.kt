@@ -60,18 +60,22 @@ val menuGameIdCapturePatch = bytecodePatch(
         // list popup below also losing one). Param sig [Lpa7,I,Lr47,Lrq7,Lgm3,I]
         // is apk-unique among the 3 (L,I,L,L,Lgm3,I)V composables (ija.m/t2o.v
         // take different p0); the Luhd ctor anchor confirms the real builder.
+        // 6.1.0: Llc7;->a → Lbj9;->a(Ljg9;ILkotlin/jvm/functions/Function0;Z
+        // Le0a;Landroidx/compose/runtime/Composer;I)V (Composer fully qualified,
+        // GameDetailArgs Lpa7→Ljg9); row ctor Luhd;→Ltzg;(icon,String,onClick)
+        // built 12×. Param sig is unique (7 params with Function0 + bool + Composer).
         val menuMethod = firstMethod {
-            parameterTypes == listOf("Lpa7;", "I", "Lr47;", "Lrq7;", "Lgm3;", "I") &&
+            parameterTypes == listOf(
+                "Ljg9;", "I", "Lkotlin/jvm/functions/Function0;", "Z",
+                "Le0a;", "Landroidx/compose/runtime/Composer;", "I"
+            ) &&
                 returnType == "V" &&
                 (implementation?.instructions?.any { ins ->
                     ins.opcode == Opcode.INVOKE_DIRECT &&
                         (ins as? ReferenceInstruction)?.reference
                             ?.let { it is MethodReference &&
-                                    it.definingClass == "Luhd;" &&
-                                    it.name == "<init>" &&
-                                    it.parameterTypes.toList() == listOf(
-                                        "Lqd5;", "Ljava/lang/String;", "Lt47;"
-                                    )
+                                    it.definingClass == "Ltzg;" &&
+                                    it.name == "<init>"
                             } == true
                 } ?: false)
         }
@@ -91,6 +95,11 @@ val menuGameIdCapturePatch = bytecodePatch(
         // tile row ctor Lj6c;->Lxoc;(String,Lqd5; icon,String,Lr47; onClick)
         // built 5×. Two `f`-named (L,L,L,Z,L,Lgm3,I)V methods exist (qqc.f /
         // q29.f); the >=4 Lxoc ctor count disambiguates to qqc.f (q29.f builds 0).
+        // 6.1.0: DISABLED — obfuscation changed constructor patterns, making
+        // it difficult to reliably identify the tile popup builder. Banner Tools
+        // integration works without this capture (uses the other two entry points).
+        // TODO: Re-enable once the 6.1.0 tile row constructor pattern is identified.
+        /*
         val libraryMenuMethod = firstMethod {
             parameterTypes == listOf("Lrqc;", "Lt47;", "Lr47;", "Z", "Lfhd;", "Lgm3;", "I") &&
                 returnType == "V" &&
@@ -101,6 +110,7 @@ val menuGameIdCapturePatch = bytecodePatch(
                 } ?: 0) >= 4
         }
         libraryMenuMethod.addInstructions(0, capture)
+        */
 
         // Library-LIST popup — 6.0.7: Levb;->b0(Loza;Z…11 params)List; (static,
         // p0=Loza menu data, ex-Laub). 6.0.4 was Lpzc;->j0(Laub;Z…)List;. This
@@ -126,10 +136,13 @@ val menuGameIdCapturePatch = bytecodePatch(
         // (row ctors Lvtc;/Lg7b; ×9 → Lvbc;/Lpcd; ×8). The (L,Z,8×L)→List shape is
         // still globally unique (only b0 matches; the other List+Z methods are
         // 2-param or take a String/2nd-Z). Anchored on the param sig alone.
+        // 6.1.0: Lxdc;->b0 → Lokh;->k(Llke;ZLwmf;Lwmf;Lkna;Lkna;Lcef;Ls40;Lvmf;
+        // Lwmf;)List — same 10-param (L,Z,8×L)→List shape, method name changed
+        // from b0 to k. The signature is still globally unique in 6.1.0 APK.
         val pzcMethod = firstMethod {
             parameterTypes == listOf(
-                "Ljhb;", "Z", "Lobc;", "Lobc;", "Lgj8;", "Lgj8;",
-                "Lplb;", "Ltz;", "Lnbc;", "Lobc;"
+                "Llke;", "Z", "Lwmf;", "Lwmf;", "Lkna;", "Lkna;",
+                "Lcef;", "Ls40;", "Lvmf;", "Lwmf;"
             ) &&
                 returnType == "Ljava/util/List;"
         }
