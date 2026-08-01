@@ -194,7 +194,7 @@ jobs:
           # parsed as a Java float suffix and triggers NumberFormatException
           # before the patch ever runs). The quotes also make values with
           # spaces (e.g. "BannerHub v6 PuBG CrossFire") a non-issue.
-          java -jar shared/revanced-cli.jar patch shared/GameHub_6.0.9.apk \
+          java -jar shared/revanced-cli.jar patch shared/GameHub_6.1.0.apk \
             --patches shared/patches.rvp \
             --bypass-verification \
             -e "Change package name" \
