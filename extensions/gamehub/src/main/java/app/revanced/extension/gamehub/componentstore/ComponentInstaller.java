@@ -191,7 +191,7 @@ public class ComponentInstaller {
 
                     // On Android, executable permissions are managed by system
                     // Set executable for common binary extensions
-                    String lowerName = entryName.toLowerCase();
+                    String lowerName = entry.getName().toLowerCase();
                     if (lowerName.endsWith(".so") || lowerName.endsWith(".dll") || 
                         lowerName.endsWith(".exe") || !lowerName.contains(".")) {
                         entryFile.setExecutable(true, false);
