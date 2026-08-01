@@ -53,17 +53,19 @@ val wineValidationPatch = bytecodePatch(
         }
 
         // Prepend validation at method head. PcEnginePluginHostActivity.onCreate
-        // has high register count, so p0 is a high register — we move it to v0
-        // first (proven pattern from vibrationPatch, perfOverlayPatch).
+        // has .locals 7 (v0-v6 used by original code), so we reuse v6 for our
+        // temporary values to avoid clobbering v0-v5 which are used immediately.
+        // p0 is a parameter register (high number), we move it to v6.
         // If validateWineOrPrompt returns false, abort via finish() + return-void.
         onCreateMethod.addInstructions(
             0,
             """
-                move-object/from16 v0, p0
-                invoke-static {v0}, $HANDLER_CLASS->validateWineOrPrompt(Landroid/app/Activity;)Z
-                move-result v1
-                if-eqz v1, :wine_installed
-                invoke-virtual {v0}, Landroid/app/Activity;->finish()V
+                move-object/from16 v6, p0
+                invoke-static {v6}, $HANDLER_CLASS->validateWineOrPrompt(Landroid/app/Activity;)Z
+                move-result v6
+                if-eqz v6, :wine_installed
+                move-object/from16 v6, p0
+                invoke-virtual {v6}, Landroid/app/Activity;->finish()V
                 return-void
                 :wine_installed
                 nop
